@@ -90,8 +90,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
   bottom: 120px;
-  max-width: 240px;
-  padding: 8px 12px;
+  max-width: 360px;
+  padding: 10px 16px;
   color: #2b2b2b;
   background: rgba(255,255,255,.96);
   border-radius: 14px;
@@ -137,3 +137,4 @@ body {
     background: url('phoneh1.gif') no-repeat center/cover fixed;
   }
 }
+
