@@ -90,8 +90,13 @@ body {
   left: 50%;
   transform: translateX(-50%);
   bottom: 120px;
-  max-width: 360px;
+
+  /* ✅ ให้ขยายอัตโนมัติตามข้อความ */
+  max-width: 420px;         /* หรือจะใช้ width: auto; ก็ได้ */
+  width: auto;
+  min-width: 160px;         /* ป้องกันไม่ให้แคบเกิน */
   padding: 10px 16px;
+
   color: #2b2b2b;
   background: rgba(255,255,255,.96);
   border-radius: 14px;
@@ -99,7 +104,18 @@ body {
   font-size: .95rem;
   line-height: 1.35;
   animation: bob 3.2s ease-in-out infinite;
+  word-wrap: break-word;    /* กันข้อความทะลุกรอบ */
 }
+
+/* ✅ ปิดระบบตัดบรรทัด */
+.wish-bubble .text {
+  display: block;
+  white-space: pre-wrap;     /* เคารพ \n และตัดบรรทัดอัตโนมัติ */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  overflow: visible;         /* ให้เห็นข้อความทั้งหมด */
+}
+
 .wish-bubble::after {
   content: "";
   position: absolute;
@@ -108,14 +124,6 @@ body {
   bottom: -8px;
   border: 8px solid transparent;
   border-top-color: rgba(255,255,255,.96);
-}
-
-/* ====== กล่องข้อความอธิษฐาน (แก้ line clamp ให้ถูก) ====== */
-.wish-bubble .text{
-  display: -webkit-box;
-  -webkit-line-clamp: 3;       /* เดิมว่างไว้ → กำหนดให้ตัดที่ 3 บรรทัด */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* --- แอนิเมชัน --- */
@@ -137,4 +145,5 @@ body {
     background: url('phoneh1.gif') no-repeat center/cover fixed;
   }
 }
+
 
