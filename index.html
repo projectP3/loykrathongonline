@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ลอยกระทงออนไลน์ | หน้ากระทง</title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+  <div class="title-image">
+    <img src="หัวข้อ.png" alt="ลอยกระทงออนไลน์">
+  </div>
+
+  <div class="river"></div>
+
+<div class="button-area">
+  <a class="btn" href="manu.html"><span>สร้างกระทง</span></a>
+</div>
+
+
+  <!-- ✅ โหลด Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+ <script>
+  // 🔥 ตั้งค่า Firebase (คงเดิมของเอ็ง)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCelpYvwoijqpoTsW-AhkD0scf3BRSB2Dg",
+    authDomain: "loy-krathong-online.firebaseapp.com",
+    projectId: "loy-krathong-online",
+    storageBucket: "loy-krathong-online.firebasestorage.app",
+    messagingSenderId: "89800674529",
+    appId: "1:89800674529:web:8af447aba6a5fb2067fba0",
+    measurementId: "G-41Z1GFH6RQ"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const river = document.querySelector(".river");
+
+  // ====== พารามิเตอร์ควบคุมระยะห่าง/ความเร็ว ======
+  const WATER_MIN = 30;          // ขอบบนของเลน
+  const WATER_MAX = 160;         // ขอบล่างของเลน
+  const MIN_LANE_GAP = 26;       // ระยะห่างแนวตั้งระหว่างเลน (px)
+  const BASE_DELAY_STEP = 2.8;   // ดีเลย์ฐานระหว่างแต่ละกระทง (วินาที)
+  const JITTER = 1.2;            // สุ่มแกว่งเพิ่ม/ลดดีเลย์ (วินาที)
+  const DURATION_MIN = 35;       // ช้า–เร็ว (วินาที)
+  const DURATION_MAX = 55;
+
+  // สร้างชุดเลนที่ห่างกันอย่างน้อย MIN_LANE_GAP
+  function buildLanes(n) {
+    const lanes = [];
+    const range = WATER_MAX - WATER_MIN;
+    const approxCount = Math.max(1, Math.floor(range / MIN_LANE_GAP));
+    const count = Math.min(n, approxCount);
+
+    const gap = range / (count + 1);
+    for (let i = 1; i <= count; i++) {
+      const jitter = (Math.random() - 0.5) * 10; // ขยับเล็กน้อยให้ดูธรรมชาติ
+      lanes.push(Math.round(WATER_MIN + i * gap + jitter));
+    }
+    // ถ้ากระทงมากกว่าเลน ให้วนใช้เลนเดิม
+    return (idx) => lanes[idx % lanes.length];
+  }
+
+  // ฟังก์ชันสุ่มในช่วง [a, b]
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  db.collection("krathongWishes")
+    .orderBy("timestamp", "desc")
+    .limit(40)
+    .onSnapshot((snapshot) => {
+      river.innerHTML = "";
+
+      const docs = snapshot.docs;
+      const getLaneForIndex = buildLanes(docs.length);
+
+      // ดีเลย์เริ่มต้นแบบสุ่มเล็กน้อย ให้ชุดแรกไม่ชนกัน
+      const baseOffset = rand(0, 3);
+
+      docs.forEach((docSnap, i) => {
+        const d = docSnap.data();
+
+        // --- สร้างระยะห่าง/ความเร็ว ---
+        const lane = getLaneForIndex(i);
+        const delay = baseOffset + i * BASE_DELAY_STEP + rand(0, JITTER);
+        const duration = rand(DURATION_MIN, DURATION_MAX);
+
+        // ขนาดกระทงต่างกันนิดหน่อยให้ดูมีมิติ
+        const scale = rand(0.9, 1.12);
+
+        // --- DOM ---
+        const wrap = document.createElement("div");
+        wrap.className = "krathong-wrap";
+        wrap.style.bottom = `${lane}px`;
+        wrap.style.animation = `floatAcross ${duration}s linear ${delay}s infinite`;
+
+        const bubble = document.createElement("div");
+        bubble.className = "wish-bubble";
+        bubble.innerHTML = `<div class="text">${d.wish || ""}</div>`;
+
+        const img = document.createElement("img");
+        img.className = "krathong-img";
+        img.src = d.krathong || "พนานาก.png";
+        img.style.transform = `scale(${scale})`; // ย่อ/ขยายเบา ๆ
+
+        wrap.appendChild(bubble);
+        wrap.appendChild(img);
+        river.appendChild(wrap);
+      });
+    });
+</script>
+</body>

@@ -1,0 +1,129 @@
+/* ---------- พื้นฐาน ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; } /* กันองค์ประกอบล้น */
+html, body { height: 100%; margin: 0; }
+body{
+  background: url('ลอยกระทง.gif') no-repeat center/cover fixed;
+  font-family: 'Noto Sans Thai', system-ui, sans-serif;
+
+  /* จัดให้กรอบเหลืองอยู่กึ่งกลางแนวตั้ง-แนวนอน */
+  display: grid;
+  place-items: center;
+  padding: 6vh 0; /* กันติดขอบบน/ล่างเล็กน้อย */
+}
+
+/* ---------- การ์ดเหลืองรวม ---------- */
+.container{
+  width: min(92vw, 750px);
+  /* margin: 80px auto;  <-- ไม่ต้องใช้เพราะจัดกลางด้วย grid แล้ว */
+  padding: 20px 22px;                  /* ลด padding ให้ไม่ดูใหญ่ */
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,236,180,0.88), rgba(234,210,130,0.78));
+  box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow: hidden;                    /* กันของข้างในล้นขอบเหลือง */
+}
+
+/* ---------- ฟิลด์ชื่อ/คำอธิษฐาน ---------- */
+.field-label{
+  font-weight: 700; color:#3a2a00; margin: 2px 0 6px; font-size: 1rem;
+}
+
+.input-area input,
+.input-area textarea{
+  width: 100%;
+  max-width: 100%;                     /* ไม่ให้เกินขอบเหลือง */
+  font-size: .95rem;
+  border: 0; outline: 0;
+  background: rgba(255,255,255,0.96);
+  color:#222;
+  padding: 8px 14px;                   /* ลด padding ลง */
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8),
+              0 2px 8px rgba(0,0,0,.12);
+}
+.input-area input{ height: 38px; border-radius: 999px; }
+.input-area textarea{ height: 70px; resize: none; }
+
+/* ---------- ส่วนเลือกกระทง ---------- */
+.krathong-choice h2{
+  text-align:center; color:#3a2a00; font-weight:800; margin: 4px 0 10px; font-size:1.05rem;
+}
+
+.krathong-grid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;                           /* ลดช่องว่างระหว่างกล่อง */
+}
+
+.krathong-grid img{
+  width: 100%;
+  height: 82px;                        /* ลดความสูงให้เล็กลง */
+  object-fit: contain;
+  background: rgba(255,255,255,0.94);
+  padding: 6px;                        /* ลด padding ให้ไม่ดูใหญ่ */
+  border-radius: 10px;
+  border: 2px solid transparent;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  cursor: pointer;
+}
+.krathong-grid img:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+.krathong-grid img.active{
+  border-color:#ffd36e;
+  box-shadow: 0 0 0 3px rgba(255,211,110,.4), 0 6px 15px rgba(0,0,0,.15);
+}
+
+/* ---------- ปุ่มลอยกระทง ---------- */
+.btn {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+
+  /* 🌈 พื้นหลังไล่สีแทนกรอบรูป */
+  background: linear-gradient(90deg, #a7e6ff, #c8a6ff);
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  padding: 15px 40px;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 9999;
+
+  color: #000;
+  font-weight: 700;
+  font-size: clamp(16px, 2.2vw, 24px);
+  line-height: 1;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 18px rgba(255, 211, 110, 0.6);
+}
+
+
+/* ---------- มือถือ ---------- */
+@media screen and (max-width: 768px) {
+  body {
+    background: url('phoneh1.gif') no-repeat center/cover fixed;
+  }
+}
+@media (max-width: 800px){
+  body{ padding: 5vh 0; }
+  .container{ width: 92vw; padding: 18px; gap: 16px; }
+  .krathong-grid{ grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .krathong-grid img{ height: 76px; padding: 6px; }
+}
