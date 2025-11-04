@@ -7,7 +7,7 @@ html, body {
   overflow-x: hidden !important;        /* กันเลื่อนแนวนอน */
 }
 body {
-  background: url('ลอยกระทง.gif') no-repeat center/cover fixed;
+  background: url('ลอยกระทง .gif) no-repeat center/cover fixed;
 }
 
 /* ปุ่ม = เลเยอร์บนสุด */
@@ -145,5 +145,6 @@ body {
     background: url('phoneh1.gif') no-repeat center/cover fixed;
   }
 }
+
 
 
