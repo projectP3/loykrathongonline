@@ -4,7 +4,7 @@
 *::after { box-sizing: border-box; } /* กันองค์ประกอบล้น */
 html, body { height: 100%; margin: 0; }
 body{
-  background: url('ลอยกระทง .gif') no-repeat center/cover fixed;
+  background: url('ลอยกระทง1.2.gif') no-repeat center/cover fixed;
   font-family: 'Noto Sans Thai', system-ui, sans-serif;
 
   /* จัดให้กรอบเหลืองอยู่กึ่งกลางแนวตั้ง-แนวนอน */
@@ -127,4 +127,5 @@ body{
   .krathong-grid{ grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .krathong-grid img{ height: 76px; padding: 6px; }
 }
+
 
