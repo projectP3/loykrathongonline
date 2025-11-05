@@ -8,6 +8,17 @@ html, body {
 body {
   background: url('ลอยกระทง1.2.gif') no-repeat center/cover fixed;
 }
+.counter {
+  position: absolute;
+  top: 322px; 
+  left: 50%;
+  transform: translateX(-50%);
+  
+  color: #fbfbf8;
+  font-weight: bold;
+  font-size: 2.5rem;
+  z-index: 9999;
+}
 
 .btn {
   position: fixed;
@@ -133,6 +144,7 @@ body {
     background: url('phoneh1.gif') no-repeat center/cover fixed;
   }
 }
+
 
 
 
