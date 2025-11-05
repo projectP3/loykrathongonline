@@ -9,7 +9,6 @@
 <body>
 
   <div class="container">
-    <!-- ส่วนกรอกชื่อและคำอธิษฐาน -->
     <div class="input-area">
       <label for="name">ชื่อของคุณ</label>
       <input type="text" id="name" placeholder="กรอกชื่อของคุณ...">
@@ -17,7 +16,6 @@
       <textarea id="wish" placeholder="เขียนคำอธิษฐานของคุณที่นี่..."></textarea>
     </div>
 
-    <!-- ส่วนเลือกกระทง -->
     <div class="krathong-choice">
       <h2>เลือกกระทงของคุณ</h2>
       <div class="krathong-grid">
@@ -32,14 +30,12 @@
   <div class="button-area">
     <button class="btn" onclick="saveAndGo()">ลอยกระทง</button>
   </div>
-
-  <!-- Firebase compat SDK -->
+  
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // --- Firebase config ---
     const firebaseConfig = {
       apiKey: "AIzaSyCelpYvwoijqpoTsW-AhkD0scf3BRSB2Dg",
       authDomain: "loy-krathong-online.firebaseapp.com",
@@ -53,7 +49,6 @@
     firebase.analytics();
     const db = firebase.firestore();
 
-    // --- เลือกกระทง ---
     let selectedKrathong = null;
     function selectKrathong(el){
       document.querySelectorAll(".krathong-grid img")
@@ -62,10 +57,9 @@
       selectedKrathong = el.getAttribute("src");
     }
 
-    // --- บันทึกลง Firestore แล้วไป manu.html ---
     async function saveAndGo(){
       const name = document.getElementById("name").value.trim() || "ไม่ระบุชื่อ";
-      const wish = document.getElementById("wish").value.trim() || "ขอให้สุขสมหวัง 🌕";
+      const wish = document.getElementById("wish").value.trim() || "ขอให้สุขสมหวัง ";
       const krathong = selectedKrathong || "ยังไม่ได้เลือก";
       const time = new Date().toISOString();
 
@@ -76,11 +70,8 @@
   krathong: selectedKrathong,
   timestamp: firebase.firestore.FieldValue.serverTimestamp()
 });
-
-        // เก็บไว้ใน sessionStorage เผื่อใช้โชว์ทันทีหน้า manu
         sessionStorage.setItem("lastWish",
           JSON.stringify({ id: docRef.id, name, wish, krathong, time }));
-        // ไปหน้าต่อ
         window.location.href = "index.html";
       }catch(err){
         console.error(err);
@@ -90,3 +81,4 @@
   </script>
 </body>
 </html>
+
