@@ -10,14 +10,20 @@ body {
 }
 .counter {
   position: absolute;
-  top: 270px;
+  top: 322px;
   left: 50%;
   transform: translateX(-50%);
 
   color: #fff8cc;
   font-weight: bold;
-  font-size: clamp(1rem, 2vw, 1.6rem); 
+  font-size: clamp(1rem, 2vw, 1.6rem);
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+
+  background: rgba(0, 0, 0, 0.25);   /* 🌙 พื้นหลังโปร่ง 25% */
+  padding: 8px 18px;                 /* ขอบในรอบข้อความ */
+  border-radius: 20px;               /* มน ๆ เหมือนกล่องข้อความ */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* เงานิด ๆ เพิ่มมิติ */
+
   z-index: 9999;
 }
 .btn {
@@ -147,6 +153,7 @@ body {
     top: 200px; 
     font-size: 1rem; 
 }
+
 
 
 
