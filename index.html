@@ -229,25 +229,24 @@
                 river.appendChild(wrap);
             });
         });
+  document.addEventListener("DOMContentLoaded", () => {
+  const createKrathongBtn = document.getElementById("create-krathong-btn");
+  const successMessage = document.getElementById("success-message"); // อาจไม่มีในบางหน้า
+  const lastWish = sessionStorage.getItem("lastWish");
+  const lastWishData = lastWish ? JSON.parse(lastWish) : null;
 
-    // --- SUCCESS MESSAGE CODE ---
-    document.addEventListener("DOMContentLoaded", () => {
-        const createKrathongBtn = document.getElementById("create-krathong-btn");
-        const successMessage = document.getElementById("success-message");
-        
-        if (lastWishData) {
-            createKrathongBtn.style.display = "none";
-            successMessage.style.display = "block";
-            
-            setTimeout(() => {
-                sessionStorage.removeItem("lastWish");
-            }, 500); 
-            
-        } else {
-            createKrathongBtn.style.display = "block"; 
-            successMessage.style.display = "none";
-        }
-    });
+  if (lastWishData) {
+    if (createKrathongBtn) createKrathongBtn.style.display = "none";
+    if (successMessage) {
+      successMessage.style.display = "block";
+      setTimeout(() => sessionStorage.removeItem("lastWish"), 500);
+    }
+  } else {
+    if (createKrathongBtn) createKrathongBtn.style.display = "block";
+    if (successMessage) successMessage.style.display = "none";
+  }
+});
+
         // --- Responsive spacing adjustment ---
 function adjustForMobile() {
   const screenWidth = window.innerWidth;
@@ -271,10 +270,10 @@ window.addEventListener("resize", () => {
 adjustForMobile();
 location.reload(); // รีโหลดหน้าเพื่อให้กระทงจัดระยะใหม่
 });
-
     </script>
 
 </body>
 
 </html>
+
 
