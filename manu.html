@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ลอยกระทงออนไลน์ | เลือกกระทง</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="input-area">
+      <label for="name">ชื่อของคุณ</label>
+      <input type="text" id="name" placeholder="กรอกชื่อของคุณ...">
+      <label for="wish">คำอธิษฐาน</label>
+      <textarea id="wish" placeholder="เขียนคำอธิษฐานของคุณที่นี่..."></textarea>
+    </div>
+
+    <div class="krathong-choice">
+      <h2>เลือกกระทงของคุณ</h2>
+      <div class="krathong-grid">
+        <img src="พนานาก.png" alt="กระทงดอกไม้" onclick="selectKrathong(this)">
+        <img src="หมูเด้ง.png" alt="กระทงใบตอง" onclick="selectKrathong(this)">
+        <img src="เสือ.png"   alt="กระทงปลา"   onclick="selectKrathong(this)">
+        <img src="กระทงใบตองสีแดง.png"   alt="กระทงหงส์"  onclick="selectKrathong(this)">
+      </div>
+    </div>
+  </div>
+
+  <div class="button-area">
+    <button class="btn" onclick="saveAndGo()">ลอยกระทง</button>
+  </div>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCelpYvwoijqpoTsW-AhkD0scf3BRSB2Dg",
+      authDomain: "loy-krathong-online.firebaseapp.com",
+      projectId: "loy-krathong-online",
+      storageBucket: "loy-krathong-online.firebasestorage.app",
+      messagingSenderId: "89800674529",
+      appId: "1:89800674529:web:8af447aba6a5fb2067fba0",
+      measurementId: "G-41Z1GFH6RQ"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    const db = firebase.firestore();
+
+    let selectedKrathong = null;
+    function selectKrathong(el){
+      document.querySelectorAll(".krathong-grid img")
+        .forEach(img => img.classList.remove("active"));
+      el.classList.add("active");
+      selectedKrathong = el.getAttribute("src");
+    }
+
+    async function saveAndGo(){
+      // *** แก้ไข: กำหนดค่าเริ่มต้นให้ name เป็น "ไม่ระบุชื่อ" เสมอถ้าไม่มีการกรอก ***
+      const name = document.getElementById("name").value.trim() || "ไม่ระบุชื่อ";
+      const wish = document.getElementById("wish").value.trim() || "ขอให้สุขสมหวัง"; // แก้ให้มีค่าเริ่มต้น
+      const krathong = selectedKrathong || "ยังไม่ได้เลือก";
+      const time = new Date().toISOString();
+
+      try{
+        const docRef = await db.collection("krathongWishes").add({
+          name: name, // ใช้ชื่อที่ถูกกำหนดค่าเริ่มต้นแล้ว
+          wish: wish,
+          krathong: selectedKrathong,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        sessionStorage.setItem("lastWish",
+          JSON.stringify({ id: docRef.id, name, wish, krathong, time }));
+        window.location.href = "index.html";
+      }catch(err){
+        console.error(err);
+        alert("❌ บันทึกไม่สำเร็จ โปรดลองอีกครั้ง");
+      }
+    }
+  </script>
+</body>
+</html>

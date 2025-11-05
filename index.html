@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลอยกระทงออนไลน์ | หน้ากระทง</title>
+    <link rel="stylesheet" href="style1.css">
+    <style>
+        /* CSS สำหรับข้อความแสดงความสำเร็จ (ลอยกระทงสำเร็จ) */
+        .success-message {
+            font-size: 1.5em;
+            color: #008000;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #e6ffe6;
+            border-radius: 8px;
+            text-align: center;
+            display: none; /* Hide by default */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+
+        /* ----------------------------------------------------------------- */
+        /* --- CSS สำหรับ KRATHONG DISPLAY --- */
+        /* ----------------------------------------------------------------- */
+
+        /* ================================================================
+        *** 1. แก้ไข .wish-bubble ให้โปร่งแสง (จางลงอีก) ***
+        ================================================================
+        */
+        .wish-bubble {
+            position: absolute;
+            bottom: 100%; 
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            
+            /* แก้ไข: ปรับความโปร่งแสงเป็น 0.7 (70%) */
+            background-color: rgba(255, 255, 255, 0.7); 
+            
+            border: 1px solid #ffcc00;
+            border-radius: 5px;
+            z-index: 50; 
+            font-size: 0.85em;
+            font-weight: normal;
+            color: #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            opacity: 1;
+            visibility: visible;
+            min-width: 120px; 
+            box-sizing: border-box; 
+        }
+        /* ================================================================ */
+
+        /* ชื่อกระทงภายใน Bubble */
+        .wish-bubble .name {
+            font-weight: bold;
+            color: #000;
+            display: block;
+            margin-bottom: 3px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+            max-width: 100%;
+        }
+        
+        /* ข้อความอธิษฐานภายใน Bubble */
+        .wish-bubble .text {
+            white-space: normal; 
+            max-width: 200px; 
+            display: block;
+        }
+
+        .name-tag {
+            display: none; 
+        }
+        
+        .krathong-wrap.is-my-krathong {
+            z-index: 100; /* ให้กระทงตัวเองอยู่หน้าสุด */
+        }
+        
+        /* CSS สำหรับ Footer (ของเดิม) */
+        .site-footer {
+            position: fixed; 
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.75); 
+            color: white; 
+            text-align: center; 
+            padding: 10px 0; 
+            font-size: 0.8em; 
+            z-index: 900; 
+            box-sizing: border-box;
+        }
+
+        .site-footer p {
+            margin: 0; 
+        }
+        
+        /* CSS สำหรับ .button-area (ของเดิม) */
+        .button-area {
+            position: fixed; /* ยึดตำแหน่งไว้ */
+            bottom: 50px;    /* ขยับขึ้น 50px จากด้านล่าง (เพื่อหลบ footer) */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;   /* ให้อยู่เหนือ footer และกระทง */
+        }
+        
+        /* CSS สำหรับปุ่ม "สร้างกระทง" (กันข้อความตก) (ของเดิม) */
+        #create-krathong-btn {
+            white-space: nowrap; /* สั่งไม่ให้ข้อความตกบรรทัด */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="title-image">
+        <img src="หัวข้อ.png" alt="ลอยกระทงออนไลน์">
+    </div>
+
+    <div class="river"></div>
+
+    <div class="button-area">
+        <a class="btn" id="create-krathong-btn" href="manu.html"><span>สร้างกระทง</span></a>
+        <div class="success-message" id="success-message">
+            ลอยกระทงออนไลน์สำเร็จ
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>สงวนลิขสิทธิ์ พ.ศ. 2568 คณะวิศวกรรมศาสตร์และเทคโนโลยี | สถาบันการจัดการปัญญาภิวัฒน์</p>
+    </footer>
+
+
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+    <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCelpYvwoijqpoTsW-AhkD0scf3BRSB2Dg",
+        authDomain: "loy-krathong-online.firebaseapp.com",
+        projectId: "loy-krathong-online",
+        storageBucket: "loy-krathong-online.firebasestorage.app",
+        messagingSenderId: "89800674529",
+        appId: "1:89800674529:web:8af447aba6a5fb2067fba0",
+        measurementId: "G-41Z1GFH6RQ"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const river = document.querySelector(".river");
+    const WATER_MIN = 30; 
+    const WATER_MAX = 90; 
+    const MIN_LANE_GAP = 20; 
+    const BASE_DELAY_STEP = 0.5; 	
+    const JITTER = 0.5; 	 	 
+    const DURATION_MIN = 35; 	 
+    const DURATION_MAX = 55;
+
+    function buildLanes(n) {
+        const lanes = [];
+        const NUM_LANES = 3; 
+        const range = WATER_MAX - WATER_MIN;
+        const gap = range / (NUM_LANES - 1); 
+
+        for (let i = 0; i < NUM_LANES; i++) {
+            const jitter = (Math.random() - 0.5) * 5; 
+            lanes.push(Math.round(WATER_MIN + i * gap + jitter));
+        }
+        return (idx) => lanes[idx % lanes.length]; 
+    }
+
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    const lastWish = sessionStorage.getItem("lastWish");
+    const lastWishData = lastWish ? JSON.parse(lastWish) : null;
+
+
+    db.collection("krathongWishes")
+        .orderBy("timestamp", "desc")
+        .limit(40)
+        .onSnapshot((snapshot) => {
+            river.innerHTML = "";
+
+            const docs = snapshot.docs;
+            const getLaneForIndex = buildLanes(docs.length);
+
+            const baseOffset = rand(0, 3);
+
+            docs.forEach((docSnap, i) => {
+                const d = docSnap.data();
+                const docId = docSnap.id;
+
+                const isMyKrathong = lastWishData && lastWishData.id === docId;
+
+                const lane = getLaneForIndex(i);
+                const delay = baseOffset + i * BASE_DELAY_STEP + rand(0, JITTER);
+                const duration = rand(DURATION_MIN, DURATION_MAX);
+
+                const scale = rand(0.9, 1.12);
+
+                const wrap = document.createElement("div");
+                wrap.className = "krathong-wrap";
+                wrap.style.bottom = `${lane}px`;
+                wrap.style.animation = `floatAcross ${duration}s linear ${delay}s infinite`;
+                
+                if (isMyKrathong) {
+                    wrap.classList.add("is-my-krathong"); 
+                }
+
+                const bubble = document.createElement("div");
+                bubble.className = "wish-bubble";
+                
+                const nameText = d.name && typeof d.name === 'string' && d.name.trim() !== '' ? d.name.trim() : "ไม่ระบุชื่อ";
+                const wishText = d.wish && typeof d.wish === 'string' && d.wish.trim() !== '' ? d.wish.trim() : "ขอให้สุขสมหวัง";
+
+                bubble.innerHTML = `
+                    <span class="name">${nameText}</span>
+                    <span class="text">${wishText}</span>
+                `;
+                
+                const img = document.createElement("img");
+                img.className = "krathong-img";
+                img.src = d.krathong || "พนานาก.png"; 
+                img.style.transform = `scale(${scale})`; 
+
+                wrap.appendChild(bubble);
+                wrap.appendChild(img);
+                
+                river.appendChild(wrap);
+            });
+        });
+
+    // --- SUCCESS MESSAGE CODE ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const createKrathongBtn = document.getElementById("create-krathong-btn");
+        const successMessage = document.getElementById("success-message");
+        
+        if (lastWishData) {
+            createKrathongBtn.style.display = "none";
+            successMessage.style.display = "block";
+            
+            setTimeout(() => {
+                sessionStorage.removeItem("lastWish");
+            }, 500); 
+            
+        } else {
+            createKrathongBtn.style.display = "block"; 
+            successMessage.style.display = "none";
+        }
+    });
+    </script>
+
+</body>
+</html>
