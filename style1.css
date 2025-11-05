@@ -1,16 +1,14 @@
-/* --- พื้นฐาน & พื้นหลัง --- */
 * { box-sizing: border-box; }
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow-x: hidden !important;        /* กันเลื่อนแนวนอน */
+  overflow-x: hidden !important;       
 }
 body {
   background: url('ลอยกระทง1.2.gif') no-repeat center/cover fixed;
 }
 
-/* ปุ่ม = เลเยอร์บนสุด */
 .btn {
   position: fixed;
   bottom: 30px;
@@ -19,7 +17,6 @@ body {
   display: grid;
   place-items: center;
 
-  /* 🌈 พื้นหลังไล่สีแทนกรอบรูป */
   background: linear-gradient(90deg, #a7e6ff, #c8a6ff);
   border: 3px solid rgba(255, 255, 255, 0.7);
   border-radius: 20px;
@@ -42,17 +39,14 @@ body {
   box-shadow: 0 6px 18px rgba(255, 211, 110, 0.6);
 }
 
-
-/* --- พื้นน้ำ --- */
 .river {
   position: fixed;
   left: 0; right: 0; bottom: 0;
-  height: 50vh;                           /* ปรับ 45–55vh ได้ */
-  overflow: hidden;                        /* กันล้นขอบ */
+  height: 50vh;                           
+  overflow: hidden;                       
   pointer-events: none;
   z-index: 5;
 }
-/* ====== กระทงลอยช้า (120s) + สลับความเร็วเล็กน้อย ====== */
 .krathong-wrap{
   position: absolute;
   bottom: 0;
@@ -62,7 +56,6 @@ body {
   will-change: transform;
 }
 
-/* เว้นดีเลย์ให้ลอยห่างกันทีละช่วง (ไม่ต้องแก้ JS) */
 .river .krathong-wrap:nth-child(1)  { animation-delay: 0s;   }
 .river .krathong-wrap:nth-child(2)  { animation-delay: 2.8s; }
 .river .krathong-wrap:nth-child(3)  { animation-delay: 5.6s; }
@@ -73,9 +66,7 @@ body {
 .river .krathong-wrap:nth-child(8)  { animation-delay: 19.6s;}
 .river .krathong-wrap:nth-child(9)  { animation-delay: 22.4s;}
 .river .krathong-wrap:nth-child(10) { animation-delay: 25.2s;}
-/* เพิ่มต่อได้ตามจำนวนที่คาดว่าจะมี */
 
- /* สลับความเร็วนิดหน่อยให้ดูธรรมชาติ */
 .river .krathong-wrap:nth-child(odd) { animation-duration: 110s; }
 .river .krathong-wrap:nth-child(3n)  { animation-duration: 135s; }
 
@@ -91,10 +82,10 @@ body {
   transform: translateX(-50%);
   bottom: 120px;
 
-  /* ✅ ให้ขยายอัตโนมัติตามข้อความ */
-  max-width: 420px;         /* หรือจะใช้ width: auto; ก็ได้ */
+
+  max-width: 420px;       
   width: auto;
-  min-width: 160px;         /* ป้องกันไม่ให้แคบเกิน */
+  min-width: 160px;        
   padding: 10px 16px;
 
   color: #2b2b2b;
@@ -104,16 +95,15 @@ body {
   font-size: .95rem;
   line-height: 1.35;
   animation: bob 3.2s ease-in-out infinite;
-  word-wrap: break-word;    /* กันข้อความทะลุกรอบ */
+  word-wrap: break-word;  
 }
 
-/* ✅ ปิดระบบตัดบรรทัด */
 .wish-bubble .text {
   display: block;
-  white-space: pre-wrap;     /* เคารพ \n และตัดบรรทัดอัตโนมัติ */
+  white-space: pre-wrap;    
   word-break: break-word;
   overflow-wrap: anywhere;
-  overflow: visible;         /* ให้เห็นข้อความทั้งหมด */
+  overflow: visible;       
 }
 
 .wish-bubble::after {
@@ -126,8 +116,6 @@ body {
   border-top-color: rgba(255,255,255,.96);
 }
 
-/* --- แอนิเมชัน --- */
-/* วิ่งด้วย transform → ไม่ทำให้เลย์เอาต์กว้างขึ้น */
 @keyframes floatAcross {
   from { transform: translateX(-120vw); }
   to   { transform: translateX(120vw); }
@@ -145,6 +133,7 @@ body {
     background: url('phoneh1.gif') no-repeat center/cover fixed;
   }
 }
+
 
 
 
